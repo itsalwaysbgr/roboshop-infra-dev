@@ -1,15 +1,23 @@
 variable "project" {
-    default = "roboshop"
+  default = "roboshop"
 }
 
 variable "environment" {
-    default = "dev"
+  default = "dev"
 }
 
 variable "frontend_sg_name" {
-    default = "frontend"
+  default = "frontend"
 }
 
 variable "frontend_sg_description" {
-    default = "created sg for frontend"
+  default = "created sg for frontend"
+}
+
+variable "bastion_sg_name" {
+  default = "bastion"
+}
+
+variable "bastion_sg_description" {
+  default = "created sg for bastion"
 }
