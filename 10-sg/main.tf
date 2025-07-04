@@ -24,7 +24,7 @@ module "bastion" {
 # bastin accepting connection from bastion_laptop
 
 resource "aws_security_group_rule" "bastion_laptop" {
-  type              = ingress
+  type              = "ingress"
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
