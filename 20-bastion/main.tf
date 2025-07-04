@@ -9,7 +9,7 @@ resource "aws_instance" "web" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${var.project}0-$(var.environment)-bastion"
+      Name = "${var.project}0-${var.environment}-bastion"
     }
   )
 }
