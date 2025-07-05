@@ -1,7 +1,9 @@
 module "backend_alb" {
-  source   = "terraform-aws-modules/alb/aws"
-  version  = "9.17.0"
-  internal = true # private load balancer
+  source                     = "terraform-aws-modules/alb/aws"
+  version                    = "9.17.0"
+  internal                   = true # private load balancer
+  enable_deletion_protection = false
+
 
   name                  = "${var.project}-${var.environment}-backend-alb" #roboshop dev backend alb
   vpc_id                = local.vpc_id
