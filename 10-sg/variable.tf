@@ -21,3 +21,7 @@ variable "bastion_sg_name" {
 variable "bastion_sg_description" {
   default = "created sg for bastion"
 }
+
+variable "mongodb_ports_vpn" {
+  default = [22, 27017]
+}
