@@ -15,7 +15,7 @@ module "bastion" {
   environment = var.environment
 
   sg_name        = var.bastion_sg_name
-  sg_description = var.bastion_sg_description
+  sg_description = var.bastion_sg_descriptionx
 
   vpc_id = local.vpc_id
 }
@@ -221,6 +221,14 @@ resource "aws_security_group_rule" "vpn_943" {
   security_group_id = module.vpn.sg_id
 }
 
+resource "aws_security_group_rule" "mongodb_catalogue" {
+  type                     = "ingress"
+  from_port                = 27017
+  to_port                  = 27017
+  protocol                 = "tcp"
+  source_security_group_id = module.catalogue.sg_id
+  security_group_id        = module.mongodb.sg_id
+}
 
 resource "aws_security_group_rule" "catalogue_backend_alb" {
   type                     = "ingress"
@@ -249,7 +257,7 @@ resource "aws_security_group_rule" "catalogue_vpn_https" {
   security_group_id        = module.catalogue.sg_id
 }
 
-resource "aws_security_group_rule" "catalogue_bastion" {
+resource "aws_security_group_rule" "catalogue_bastion_ssh" {
   type                     = "ingress"
   from_port                = 22
   to_port                  = 22
@@ -258,11 +266,3 @@ resource "aws_security_group_rule" "catalogue_bastion" {
   security_group_id        = module.catalogue.sg_id
 }
 
-resource "aws_security_group_rule" "mongodb_catalogue" {
-  type                     = "ingress"
-  from_port                = 27017
-  to_port                  = 27017
-  protocol                 = "tcp"
-  source_security_group_id = module.catalogue.sg_id
-  security_group_id        = module.mongodb.sg_id
-}
