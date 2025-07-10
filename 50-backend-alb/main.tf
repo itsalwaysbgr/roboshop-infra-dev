@@ -32,9 +32,21 @@ resource "aws_lb_listener" "backend_alb" {
     type = "fixed-response"
 
     fixed_response {
-      content_type = "text/plain"
-      message_body = "<h1> yo, bro this is backend alb <h1>"
+      content_type = "text/html"
+      message_body = "<h1> yo, bro this is backend alb </h1>"
       status_code  = "200"
     }
+  }
+}
+
+resource "aws_route53_record" "backend_alb" {
+  zone_id = var.zone_id
+  name    = "*.backend-dev.${var.zone_name}"
+  type    = "A"
+
+  alias {
+    name                   = module.backend_alb.dns_name
+    zone_id                = module.backend_alb.zone_id # this is the zone_id of alb and not our zone_id
+    evaluate_target_health = true
   }
 }

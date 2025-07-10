@@ -80,6 +80,18 @@ module "rabbitmq" {
   vpc_id = local.vpc_id
 }
 
+module "catalogue" {
+  source      = "git::https://github.com/itsalwaysbgr/terraform-aws-securitygroup?ref=main"
+  project     = var.project
+  environment = var.environment
+
+  sg_name        = "catalogue"
+  sg_description = "for catalogue"
+
+  vpc_id = local.vpc_id
+}
+
+
 # vpn ports to be enalbed 22, 443, 1194, 943
 
 module "backend_alb" {
@@ -209,3 +221,48 @@ resource "aws_security_group_rule" "vpn_943" {
   security_group_id = module.vpn.sg_id
 }
 
+
+resource "aws_security_group_rule" "catalogue_backend_alb" {
+  type                     = "ingress"
+  from_port                = 8080
+  to_port                  = 8080
+  protocol                 = "tcp"
+  source_security_group_id = module.backend_alb.sg_id
+  security_group_id        = module.catalogue.sg_id
+}
+
+resource "aws_security_group_rule" "catalogue_vpn_ssh" {
+  type                     = "ingress"
+  from_port                = 22
+  to_port                  = 22
+  protocol                 = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id        = module.catalogue.sg_id
+}
+
+resource "aws_security_group_rule" "catalogue_vpn_https" {
+  type                     = "ingress"
+  from_port                = 8080
+  to_port                  = 8080
+  protocol                 = "tcp"
+  source_security_group_id = module.vpn.sg_id
+  security_group_id        = module.catalogue.sg_id
+}
+
+resource "aws_security_group_rule" "catalogue_bastion" {
+  type                     = "ingress"
+  from_port                = 22
+  to_port                  = 22
+  protocol                 = "tcp"
+  source_security_group_id = module.bastion.sg_id
+  security_group_id        = module.catalogue.sg_id
+}
+
+resource "aws_security_group_rule" "mongodb_catalogue" {
+  type                     = "ingress"
+  from_port                = 27017
+  to_port                  = 27017
+  protocol                 = "tcp"
+  source_security_group_id = module.catalogue.sg_id
+  security_group_id        = module.mongodb.sg_id
+}

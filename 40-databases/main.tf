@@ -104,6 +104,7 @@ resource "aws_instance" "mysql" {
 
   vpc_security_group_ids = [local.mysql_sg_id]
   subnet_id              = local.database_subnet_id
+  iam_instance_profile = "EC2RoleToFetchSSMParams"
 
   tags = merge(
     local.common_tags,
@@ -195,4 +196,40 @@ resource "terraform_data" "rabbitmq" {
       "sudo sh /tmp/bootstrap.sh rabbitmq"
     ]
   }
+}
+
+resource "aws_route53_record" "mongodb" {
+  zone_id = var.zone_id
+  name    = "mongodb.${var.zone_name}"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.mongodb.private_ip]
+  allow_overwrite = true
+}
+
+resource "aws_route53_record" "redis" {
+  zone_id = var.zone_id
+  name    = "redis.${var.zone_name}"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.redis.private_ip]
+  allow_overwrite = true
+}
+
+resource "aws_route53_record" "mysql" {
+  zone_id = var.zone_id
+  name    = "mysql.${var.zone_name}"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.mysql.private_ip]
+  allow_overwrite = true
+}
+
+resource "aws_route53_record" "rabbitmq" {
+  zone_id = var.zone_id
+  name    = "rabbitmq.${var.zone_name}"
+  type    = "A"
+  ttl     = 1
+  records = [aws_instance.rabbitmq.private_ip]
+  allow_overwrite = true
 }
