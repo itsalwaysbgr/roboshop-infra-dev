@@ -1,5 +1,5 @@
 module "backend_alb" {
-  source                     = "terraform-aws-modules/alb/aws"
+  source                     = "terraform-aws-modules/alb/aws" # this is an open source module from git 
   version                    = "9.17.0"
   internal                   = true # private load balancer
   enable_deletion_protection = false
